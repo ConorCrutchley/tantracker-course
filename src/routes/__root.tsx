@@ -2,6 +2,14 @@
 /// <reference types="vite/client" />
 
 import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/clerk-react";
+import {
   HeadContent,
   Link,
   Outlet,
@@ -9,6 +17,7 @@ import {
   createRootRoute,
 } from "@tanstack/react-router";
 
+import { Button } from "@/components/ui/button";
 import { ChartColumnBigIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import appCss from "@/styles/app.css?url";
@@ -91,20 +100,49 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+  // Import your Publishable Key
+  const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+  if (!PUBLISHABLE_KEY) {
+    throw new Error("Missing Publishable Key");
+  }
   return (
-    <html>
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <nav className="bg-primary p-4 h-20 text-white flex items-center justify-between">
-          <Link to="/" className="flex gap-1 items-center font-bold text-2xl">
-            <ChartColumnBigIcon className="text-lime-500" /> TanTracker
-          </Link>
-        </nav>
-        {children}
-        <Scripts />
-      </body>
-    </html>
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+      <html>
+        <head>
+          <HeadContent />
+        </head>
+        <body>
+          <nav className="bg-primary p-4 h-20 text-white flex items-center justify-between">
+            <Link to="/" className="flex gap-1 items-center font-bold text-2xl">
+              <ChartColumnBigIcon className="text-lime-500" /> TanTracker
+            </Link>
+            <div>
+              <SignedOut>
+                <div className="text-white flex items-center">
+                  <Button asChild variant="link" className="text-white">
+                    <SignInButton />
+                  </Button>
+                  <div className="w-[1px] h-8 bg-zinc-700"></div>
+                  <Button asChild variant="link" className="text-white">
+                    <SignUpButton />
+                  </Button>
+                </div>
+              </SignedOut>
+              <SignedIn>
+                <UserButton
+                  showName
+                  appearance={{
+                    elements: { userButtonOuterIdentifier: { color: "white" } },
+                  }}
+                />
+              </SignedIn>
+            </div>
+          </nav>
+          {children}
+          <Scripts />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
