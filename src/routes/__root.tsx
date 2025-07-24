@@ -3,11 +3,13 @@
 
 import {
   HeadContent,
+  Link,
   Outlet,
   Scripts,
   createRootRoute,
 } from "@tanstack/react-router";
 
+import { ChartColumnBigIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import appCss from "@/styles/app.css?url";
 import poppins100 from "@fontsource/poppins/100.css?url";
@@ -95,6 +97,11 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <HeadContent />
       </head>
       <body>
+        <nav className="bg-primary p-4 h-20 text-white flex items-center justify-between">
+          <Link to="/" className="flex gap-1 items-center font-bold text-2xl">
+            <ChartColumnBigIcon className="text-lime-500" /> TanTracker
+          </Link>
+        </nav>
         {children}
         <Scripts />
       </body>
