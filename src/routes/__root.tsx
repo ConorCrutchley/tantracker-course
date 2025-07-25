@@ -8,7 +8,7 @@ import {
   SignedIn,
   SignedOut,
   UserButton,
-} from "@clerk/clerk-react";
+} from "@clerk/tanstack-react-start";
 import {
   HeadContent,
   Link,
@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { ChartColumnBigIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import appCss from "@/styles/app.css?url";
+import { getSignedInUserId } from "@/data/getSignedInUserId";
 import poppins100 from "@fontsource/poppins/100.css?url";
 import poppins200 from "@fontsource/poppins/200.css?url";
 import poppins300 from "@fontsource/poppins/300.css?url";
@@ -32,6 +33,19 @@ import poppins800 from "@fontsource/poppins/800.css?url";
 import poppins900 from "@fontsource/poppins/900.css?url";
 
 export const Route = createRootRoute({
+  notFoundComponent() {
+    return (
+      <div className="text-3xl text-center py-10 text-muted-foreground">
+        Opps, page not found!
+      </div>
+    );
+  },
+  beforeLoad: async () => {
+    const userId = await getSignedInUserId();
+    return {
+      userId,
+    };
+  },
   head: () => ({
     meta: [
       {
@@ -100,14 +114,8 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  // Import your Publishable Key
-  const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-
-  if (!PUBLISHABLE_KEY) {
-    throw new Error("Missing Publishable Key");
-  }
   return (
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+    <ClerkProvider>
       <html>
         <head>
           <HeadContent />

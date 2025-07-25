@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@clerk/clerk-react": "^5.35.4",
+    "@clerk/tanstack-react-start": "^0.21.2",
     "@fontsource/poppins": "^5.2.6",
     "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/postcss": "^4.1.11",
