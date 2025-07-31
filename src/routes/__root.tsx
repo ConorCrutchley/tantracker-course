@@ -15,6 +15,7 @@ import {
   Outlet,
   Scripts,
   createRootRoute,
+  useNavigate,
 } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
@@ -114,6 +115,7 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+  const navigate = useNavigate();
   return (
     <ClerkProvider>
       <html>
@@ -143,7 +145,19 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
                   appearance={{
                     elements: { userButtonOuterIdentifier: { color: "white" } },
                   }}
-                />
+                >
+                  <UserButton.MenuItems>
+                    <UserButton.Action
+                      label="Dashboard"
+                      labelIcon={<ChartColumnBigIcon size={16} />}
+                      onClick={() => {
+                        navigate({
+                          to: "/dashboard",
+                        });
+                      }}
+                    />
+                  </UserButton.MenuItems>
+                </UserButton>
               </SignedIn>
             </div>
           </nav>
