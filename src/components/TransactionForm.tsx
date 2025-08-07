@@ -197,7 +197,7 @@ const TransactionForm = ({
                       className="w-full"
                       onChange={(e) => {
                         const value = e.target.valueAsNumber;
-                        field.onChange(isNaN(value) ? 0 : value);
+                        field.onChange(isNaN(value) ? undefined : value);
                       }}
                     />
                   </FormControl>

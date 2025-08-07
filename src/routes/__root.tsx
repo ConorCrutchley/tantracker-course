@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ChartColumnBigIcon } from "lucide-react";
 import type { ReactNode } from "react";
+import { Toaster } from "sonner";
 import appCss from "@/styles/app.css?url";
 import { getSignedInUserId } from "@/data/getSignedInUserId";
 import poppins100 from "@fontsource/poppins/100.css?url";
@@ -162,6 +163,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
             </div>
           </nav>
           {children}
+          <Toaster />
           <Scripts />
         </body>
       </html>
