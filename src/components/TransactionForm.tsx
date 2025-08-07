@@ -23,11 +23,13 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { categoriesTable } from "@/db/schema";
 import { format } from "date-fns/format";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+// Schema object for the transaction form
 const transactionFormSchema = z.object({
   transactionType: z.enum(["income", "expense"]),
   categoryId: z.number().positive("Please select a category"),
@@ -41,7 +43,17 @@ const transactionFormSchema = z.object({
     .max(300, "Description must contain a maximum of 300 characters"),
 });
 
-const TransactionForm = () => {
+/**
+ * Produces the transaction form
+ * @param categories List of categories from the categories table
+ * @returns Transaction Form component
+ */
+const TransactionForm = ({
+  categories,
+}: {
+  categories: (typeof categoriesTable.$inferSelect)[];
+}) => {
+  // Use Form from react-hook-form and set resolver and default schema
   const form = useForm<z.infer<typeof transactionFormSchema>>({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: {
@@ -52,12 +64,26 @@ const TransactionForm = () => {
       transactionDate: new Date(),
     },
   });
+
+  // Watch the transaction Type field and update the categories when it is changed
+  const transactionType = form.watch("transactionType");
+  const filteredCategories = categories.filter(
+    (cat) => cat.type === transactionType
+  );
+
+  /**
+   * Handle submission of the form
+   * @param data The form data
+   */
   const handleSubmit = (data: z.infer<typeof transactionFormSchema>) => {
     console.log({ data });
   };
+
+  // Return the component
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)}>
+        {/* Fields where the width should only be half the size of the form */}
         <fieldset
           className="grid grid-cols-2 gap-y-5 gap-x-2"
           disabled={form.formState.isSubmitting}
@@ -103,7 +129,13 @@ const TransactionForm = () => {
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Category" />
                       </SelectTrigger>
-                      <SelectContent></SelectContent>
+                      <SelectContent>
+                        {filteredCategories.map((cat) => (
+                          <SelectItem key={cat.id} value={cat.id.toString()}>
+                            {cat.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
                     </Select>
                   </FormControl>
                   <FormMessage />
@@ -177,6 +209,7 @@ const TransactionForm = () => {
           />
         </fieldset>
 
+        {/* Fields that should be the full size of the form */}
         <fieldset
           className="mt-5 flex flex-col gap-5"
           disabled={form.formState.isSubmitting}
@@ -198,6 +231,7 @@ const TransactionForm = () => {
             }}
           />
 
+          {/* Submit button */}
           <Button type="submit">
             {form.formState.isSubmitting ? "Submitting..." : "Submit"}
           </Button>
