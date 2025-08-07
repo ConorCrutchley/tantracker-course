@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { addDays } from "date-fns";
 import { categoriesTable } from "@/db/schema";
 import { format } from "date-fns/format";
 import { useForm } from "react-hook-form";
@@ -30,12 +31,12 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 // Schema object for the transaction form
-const transactionFormSchema = z.object({
+export const transactionFormSchema = z.object({
   transactionType: z.enum(["income", "expense"]),
   categoryId: z.number().positive("Please select a category"),
   transactionDate: z
     .date()
-    .max(new Date(), "Transaction date cannot be in the future"),
+    .max(addDays(new Date(), 1), "Transaction date cannot be in the future"),
   amount: z.number().positive("Amount must be greater than 0"),
   description: z
     .string()
@@ -50,8 +51,10 @@ const transactionFormSchema = z.object({
  */
 const TransactionForm = ({
   categories,
+  onSubmit,
 }: {
   categories: (typeof categoriesTable.$inferSelect)[];
+  onSubmit: (data: z.infer<typeof transactionFormSchema>) => Promise<void>;
 }) => {
   // Use Form from react-hook-form and set resolver and default schema
   const form = useForm<z.infer<typeof transactionFormSchema>>({
@@ -71,21 +74,13 @@ const TransactionForm = ({
     (cat) => cat.type === transactionType
   );
 
-  /**
-   * Handle submission of the form
-   * @param data The form data
-   */
-  const handleSubmit = (data: z.infer<typeof transactionFormSchema>) => {
-    console.log({ data });
-  };
-
   // Return the component
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         {/* Fields where the width should only be half the size of the form */}
         <fieldset
-          className="grid grid-cols-2 gap-y-5 gap-x-2"
+          className="grid grid-cols-2 gap-y-5 gap-x-2 items-start"
           disabled={form.formState.isSubmitting}
         >
           {/* Transaction Type */}
@@ -124,7 +119,7 @@ const TransactionForm = ({
                   <FormControl>
                     <Select
                       value={field.value.toString()}
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => field.onChange(Number(value))}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Category" />
@@ -200,6 +195,10 @@ const TransactionForm = ({
                       type="number"
                       step={0.01}
                       className="w-full"
+                      onChange={(e) => {
+                        const value = e.target.valueAsNumber;
+                        field.onChange(isNaN(value) ? 0 : value);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />

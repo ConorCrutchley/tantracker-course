@@ -1,8 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import TransactionForm, {
+  transactionFormSchema,
+} from "@/components/TransactionForm";
 
-import TransactionForm from "@/components/TransactionForm";
 import { createFileRoute } from "@tanstack/react-router";
+import { createTransaction } from "@/data/createTransaction";
+import { format } from "date-fns";
 import { getCategories } from "@/data/getCategories";
+import z from "zod";
 
 export const Route = createFileRoute(
   "/_authed/dashboard/transactions/new/_layout/"
@@ -18,13 +23,25 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { categories } = Route.useLoaderData();
+  const handleSubmit = async (data: z.infer<typeof transactionFormSchema>) => {
+    console.log("HANDLE SUBMIT:", { data });
+    const transaction = await createTransaction({
+      data: {
+        amount: data.amount,
+        categoryId: data.categoryId,
+        description: data.description,
+        transactionDate: format(data.transactionDate, "yyyy-MM-dd"),
+      },
+    });
+    console.log({ transaction });
+  };
   return (
     <Card className="max-w-screen-md mt-4">
       <CardHeader>
         <CardTitle>New Transaction</CardTitle>
       </CardHeader>
       <CardContent>
-        <TransactionForm categories={categories} />
+        <TransactionForm categories={categories} onSubmit={handleSubmit} />
       </CardContent>
     </Card>
   );
