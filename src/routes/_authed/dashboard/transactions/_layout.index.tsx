@@ -1,3 +1,4 @@
+import AllTransactions from "../../../../components/AllTransactions";
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import z from "zod";
@@ -24,8 +25,16 @@ export const Route = createFileRoute(
 )({
   component: RouteComponent,
   validateSearch: searchSchema,
+  loaderDeps: ({ search }) => {
+    const today = new Date();
+    return {
+      month: search.month ?? today.getMonth() + 1,
+      year: search.year ?? today.getFullYear(),
+    };
+  },
 });
 
 function RouteComponent() {
-  return <div>Hello "/_authed/dashboard/transactions/"!</div>;
+  const { month, year } = Route.useLoaderDeps();
+  return <AllTransactions month={month} year={year} />;
 }
