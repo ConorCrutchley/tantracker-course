@@ -49,5 +49,12 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const { month, year, yearsRange, transactions } = Route.useLoaderData();
   console.log("transactions", transactions);
-  return <AllTransactions month={month} year={year} yearsRange={yearsRange} />;
+  return (
+    <AllTransactions
+      month={month}
+      year={year}
+      yearsRange={yearsRange}
+      transactions={transactions}
+    />
+  );
 }
