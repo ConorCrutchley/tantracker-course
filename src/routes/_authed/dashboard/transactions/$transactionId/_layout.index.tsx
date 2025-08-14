@@ -9,11 +9,20 @@ export const Route = createFileRoute(
   "/_authed/dashboard/transactions/$transactionId/_layout/"
 )({
   component: RouteComponent,
+  errorComponent: ({ error }) => {
+    return (
+      <div className="text-3xl text-muted-foreground">
+        Oops! Transaction not found.
+      </div>
+    );
+  },
   loader: async ({ params }) => {
     const [categories, transaction] = await Promise.all([
       getCategories(),
       getTransaction({ data: { transactionId: Number(params.transactionId) } }),
     ]);
+
+    if (!transaction) throw new Error("Transaction not found");
     return {
       categories,
       transaction,
