@@ -52,9 +52,17 @@ export const transactionFormSchema = z.object({
 const TransactionForm = ({
   categories,
   onSubmit,
+  defaultValues,
 }: {
   categories: (typeof categoriesTable.$inferSelect)[];
   onSubmit: (data: z.infer<typeof transactionFormSchema>) => Promise<void>;
+  defaultValues?: {
+    transactionType: "income" | "expense";
+    amount: number;
+    categoryId: number;
+    description: string;
+    transactionDate: Date;
+  };
 }) => {
   // Use Form from react-hook-form and set resolver and default schema
   const form = useForm<z.infer<typeof transactionFormSchema>>({
@@ -65,6 +73,7 @@ const TransactionForm = ({
       categoryId: 0,
       description: "",
       transactionDate: new Date(),
+      ...defaultValues,
     },
   });
 
