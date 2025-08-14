@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link, useRouter } from "@tanstack/react-router";
 import React, { useState } from "react";
 import {
   Select,
@@ -18,7 +19,6 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Link } from "@tanstack/react-router";
 import { PencilIcon } from "lucide-react";
 import { format } from "date-fns";
 import numeral from "numeral";
@@ -41,6 +41,7 @@ const AllTransactions = ({
     transactionType: "income" | "expense" | null;
   }[];
 }) => {
+  const router = useRouter();
   const selectedDate = new Date(year, month - 1, 1);
   const [selectedMonth, setSelectedMonth] = useState(month);
   const [selectedYear, setSelectedYear] = useState(year);
@@ -156,6 +157,13 @@ const AllTransactions = ({
                       asChild
                     >
                       <Link
+                        onClick={() => {
+                          router.clearCache({
+                            filter: (route) =>
+                              route.pathname !==
+                              `/dashboard/transaction/${transaction.id}`,
+                          });
+                        }}
                         to="/dashboard/transactions/$transactionId"
                         params={{ transactionId: transaction.id.toString() }}
                       >

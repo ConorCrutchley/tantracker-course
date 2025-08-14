@@ -1,9 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import TransactionForm, {
+  transactionFormSchema,
+} from "@/components/TransactionForm";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
-import TransactionForm from "@/components/TransactionForm";
-import { createFileRoute } from "@tanstack/react-router";
+import { format } from "date-fns";
 import { getCategories } from "@/data/getCategories";
 import { getTransaction } from "@/data/getTransaction";
+import { toast } from "sonner";
+import { updateTransaction } from "@/data/updateTransaction";
+import z from "zod";
 
 export const Route = createFileRoute(
   "/_authed/dashboard/transactions/$transactionId/_layout/"
@@ -31,8 +37,31 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
+  const navigate = useNavigate();
   const { categories, transaction } = Route.useLoaderData();
-  const handleSubmit = async () => {};
+  const handleSubmit = async (data: z.infer<typeof transactionFormSchema>) => {
+    await updateTransaction({
+      data: {
+        id: transaction.id,
+        amount: data.amount,
+        categoryId: data.categoryId,
+        description: data.description,
+        transactionDate: format(data.transactionDate, "yyyy-MM-dd"),
+      },
+    });
+    toast("Success!", {
+      className: "bg-green-500 text-white p-4 rounded-xs w-100",
+      unstyled: true,
+      description: "Transaction updated",
+    });
+    navigate({
+      to: "/dashboard/transactions",
+      search: {
+        month: data.transactionDate.getMonth() + 1,
+        year: data.transactionDate.getFullYear(),
+      },
+    });
+  };
   return (
     <Card className="max-w-screen-md mt-4">
       <CardHeader>

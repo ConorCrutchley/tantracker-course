@@ -5,22 +5,16 @@ import authMiddleware from "authMiddleware";
 import { createServerFn } from "@tanstack/react-start";
 import { db } from "@/db";
 import { format } from "date-fns";
+import { transactionByMonthSchema } from "@/data/schema/transactionByMonthSchema";
 import z from "zod";
-
-const today = new Date();
-const schema = z.object({
-  month: z.number().min(1).max(12),
-  year: z
-    .number()
-    .min(today.getFullYear() - 100)
-    .max(today.getFullYear()),
-});
 
 export const getTransactionsByMonth = createServerFn({
   method: "GET",
 })
   .middleware([authMiddleware])
-  .validator((data: z.infer<typeof schema>) => schema.parse(data))
+  .validator((data: z.infer<typeof transactionByMonthSchema>) =>
+    transactionByMonthSchema.parse(data)
+  )
   .handler(async ({ context, data }) => {
     // Get the earliest date
     const earliestDate = new Date(data.year, data.month - 1, 1);
