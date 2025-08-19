@@ -1,4 +1,4 @@
-import AllTransactions from "../../../../components/AllTransactions";
+import AllTransactions from "../../../../components/Transactions/AllTransactions";
 import { createFileRoute } from "@tanstack/react-router";
 import { getTransactionYearsRange } from "@/data/getTransactionYearsRange";
 import { getTransactionsByMonth } from "@/data/getTransactionsByMonth";
