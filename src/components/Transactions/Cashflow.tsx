@@ -108,17 +108,14 @@ const Cashflow = ({
             <ChartTooltip
               content={
                 <ChartTooltipContent
-                  labelFormatter={(value, payload) => {
-                    console.log({ value, payload });
-                    return (
-                      <div>
-                        {format(
-                          new Date(year, payload[0]?.payload?.month - 1, 1),
-                          "MMM"
-                        )}
-                      </div>
-                    );
-                  }}
+                  labelFormatter={(_, payload) => (
+                    <div>
+                      {format(
+                        new Date(year, payload[0]?.payload?.month - 1, 1),
+                        "MMM"
+                      )}
+                    </div>
+                  )}
                 />
               }
             />

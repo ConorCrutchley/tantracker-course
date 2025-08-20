@@ -1,4 +1,5 @@
 import Cashflow from "@/components/Transactions/Cashflow";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 import RecentTransactions from "@/components/Transactions/RecentTransactions";
 import { createFileRoute } from "@tanstack/react-router";
 import { getAnnualCashflow } from "@/data/getAnnualCashflow";
@@ -39,8 +40,6 @@ export const Route = createFileRoute("/_authed/dashboard/")({
 
 function RouteComponent() {
   const { transactions, cashflow, yearsRange, cfyear } = Route.useLoaderData();
-  console.log("cashflow", cashflow);
-  console.log("yearsRange", yearsRange);
   return (
     <div className="max-w-screenxl mx-auto py-5">
       <h1 className="text-4xl font-semibold pb-5">Dashboard</h1>

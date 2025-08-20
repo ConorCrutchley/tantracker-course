@@ -26,7 +26,6 @@ function RouteComponent() {
   const { categories } = Route.useLoaderData();
   const navigate = useNavigate();
   const handleSubmit = async (data: z.infer<typeof transactionFormSchema>) => {
-    console.log("HANDLE SUBMIT:", { data });
     const transaction = await createTransaction({
       data: {
         amount: data.amount,
@@ -35,7 +34,6 @@ function RouteComponent() {
         transactionDate: format(data.transactionDate, "yyyy-MM-dd"),
       },
     });
-    console.log({ transaction });
     toast("Success!", {
       className: "bg-green-500 text-white p-4 rounded-xs w-100",
       unstyled: true,

@@ -20,6 +20,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { ChartColumnBigIcon } from "lucide-react";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 import type { ReactNode } from "react";
 import { Toaster } from "sonner";
 import appCss from "@/styles/app.css?url";
@@ -35,6 +36,12 @@ import poppins800 from "@fontsource/poppins/800.css?url";
 import poppins900 from "@fontsource/poppins/900.css?url";
 
 export const Route = createRootRoute({
+  pendingMs: 0,
+  pendingComponent: () => (
+    <div className="max-w-screenxl mx-auto py-5">
+      <LoadingSkeleton />
+    </div>
+  ),
   notFoundComponent() {
     return (
       <div className="text-3xl text-center py-10 text-muted-foreground">
