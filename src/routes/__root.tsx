@@ -144,7 +144,12 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
                 <UserButton
                   showName
                   appearance={{
-                    elements: { userButtonOuterIdentifier: { color: "white" } },
+                    elements: {
+                      userButtonAvatarBox: {
+                        border: "1px solid white",
+                      },
+                      userButtonOuterIdentifier: { color: "white" },
+                    },
                   }}
                 >
                   <UserButton.MenuItems>
